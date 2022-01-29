@@ -1,7 +1,7 @@
 
 -- READ BELOW --
 
--- CREDITS TO UPTOWN LUA & TOLLING LUA , human#7231
+-- CREDITS TO UPTOWN LUA for base. & TOLLING LUA , human#7231
 -- Combined/edited scripts from some of my fav luas and made my own.
 
 -- much love, Braandon#0001
