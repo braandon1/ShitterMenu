@@ -13,12 +13,7 @@
 -- myaim = entity.get_entity_coords(player.get_entity_player_is_aiming_at(player.player_id()))
 -- deathcheck = entity.is_entity_dead(player.get_player_ped(player.player_id()))
 function loaded()
-    menu.notify("Welcome to Shitter Menu, " .. player.get_player_name(player.player_id()) .. "Check Online Tab for more features!", ShitterMenu_ver, 10, 2)
-end
-loaded()
-
-function loaded()
-    menu.notify("V1 LOADED! made by Braandon#0001", ShitterMenu_ver, 10, 2)
+    menu.notify("ShitterMenu v1.0.0 \nMade By Braandon#0001 \nGhostOne is a cutie", ShitterMenu_ver, 10, 2)
 end
 loaded()
 
@@ -174,10 +169,38 @@ local ShitterLua = menu.add_feature("Shitter Menu", "parent", 0).id
 -- Main Pages --
 
 local Player = menu.add_feature("Player Shit", "parent", ShitterLua).id
-local Vehicles = menu.add_feature("Vehicle Shit", "parent", ShitterLua).id
-local Weapons = menu.add_feature("Weapon Shit", "parent", ShitterLua).id
-local Entity = menu.add_feature("Entity Shit", "parent", ShitterLua).id
-local Disables = menu.add_feature("UI Shit", "parent", ShitterLua).id
+
+
+menu.add_feature("Give Random Tux Outfit", "action", Player, function(feat)
+    local _ped = player.get_player_ped(player.player_id())
+    local random_shoes = {
+        dress_shoes_male1 = select(math.random(1, 2), 0, 3),
+        dress_shoes_male2 = select(math.random(1, 4), 10, 0, 9, 2)
+    }
+
+    if (player.is_player_female(player.player_id())) then
+        ped.set_ped_component_variation(_ped, 3, 3, 0, 0) -- torsos
+        ped.set_ped_component_variation(_ped, 11, 305, select(math.random(1, 6), 0, 1, 2, 4, 5, 6), 0) -- tops
+        ped.set_ped_component_variation(_ped, 8, math.random(216, 217), select(math.random(1, 8), 0, 1, 2, 4, 6, 10, 13, 17), 0) -- underhsirts
+        ped.set_ped_component_variation(_ped, 7, select(math.random(1, 2), 0, 22), select(math.random(1, 5), 0, 1, 2, 6, 12), 0) -- accessories
+        ped.set_ped_component_variation(_ped, 4, 133, select(math.random(1, 7), 0, 1, 3, 8, 17, 23, 24), 0) -- legs
+        ped.set_ped_component_variation(_ped, 6, select(math.random(1, 3), 6, 13, 15), 0, 0) -- feet
+    else
+        ped.set_ped_component_variation(_ped, 3, 4, 0, 0) -- torsos
+        ped.set_ped_component_variation(_ped, 11, 23, select(math.random(1, 3), 0, 1, 3), 0) -- tops
+        ped.set_ped_component_variation(_ped, 8, 10, select(math.random(1, 7), 0, 1, 2, 3, 5, 6, 10), 0) -- underhsirts
+        ped.set_ped_component_variation(_ped, 7, select(math.random(1, 2), 0, 21), select(math.random(1, 3), 9, 10, 11), 0) -- accessories
+        ped.set_ped_component_variation(_ped, 4, 28, select(math.random(1, 8), 0, 3, 4, 5, 6, 8, 10, 11), 0) -- legs
+        local xyz = math.random(1, 3)
+        if (xyz == 1) then
+            ped.set_ped_component_variation(_ped, 6, 10, 0, 0) -- feet
+        elseif (xyz == 2) then
+            ped.set_ped_component_variation(_ped, 6, 20, random_shoes["dress_shoes_male1"], 0) -- feet
+        elseif (xyz == 3) then
+            ped.set_ped_component_variation(_ped, 6, 21, random_shoes["dress_shoes_male2"], 0) -- feet
+        end
+    end
+end)
 
 
 local RetardHealth = menu.add_feature("Set Health", "action_value_str", Player, function(feat)
@@ -227,908 +250,281 @@ local ParachuteMen = menu.add_feature("Infinite Parachutes", "toggle", Player, f
 	return HANDLER_CONTINUE
 end)
 
-
-local Torque = menu.add_feature("Torque Modifier", "value_f", Vehicles, function(feat)
-	if feat.on then
-		vehicle.set_vehicle_engine_torque_multiplier_this_frame(ped.get_vehicle_ped_is_using(player.get_player_ped(player.player_id())), feat.value)
-	end
-	return HANDLER_CONTINUE
-end)
-	Torque.min = 0
-	Torque.max = 100
-	Torque.mod = 1
-	Torque.value = 0
-
-local LowSpeed = menu.add_feature("Set Low Rider Speed", "toggle", Vehicles, function(feat)
-	if feat.on then
-		entity.set_entity_max_speed(ped.get_vehicle_ped_is_using(player.get_player_ped(player.player_id())), 17.40)
-	else
-		entity.set_entity_max_speed(ped.get_vehicle_ped_is_using(player.get_player_ped(player.player_id())), 540)
-	end
-end)
-
-local TopSpeed = menu.add_feature("Disable Top Speed", "toggle", Vehicles, function(feat)
-	if feat.on then
-		entity.set_entity_max_speed(ped.get_vehicle_ped_is_using(player.get_player_ped(player.player_id())), 2147483646)
-	else
-		entity.set_entity_max_speed(ped.get_vehicle_ped_is_using(player.get_player_ped(player.player_id())), 540)
-	end
-end)
-
-local VehicleTraction = menu.add_feature("Slide Like A MF", "toggle", Vehicles, function(feat)
-	if feat.on then
-		vehicle.set_vehicle_reduce_grip(ped.get_vehicle_ped_is_using(player.get_player_ped(player.player_id())), true)
-	else
-	    vehicle.set_vehicle_reduce_grip(ped.get_vehicle_ped_is_using(player.get_player_ped(player.player_id())), false)
-	end
-	return	HANDLER_CONTINUE
-end)
-
-
-local GiveBasedGuns menu.add_feature("Give Basic Loadout", "action", Weapons, function(feat)
-	if feat.on then
-		for a=1, #weapon_g_hashes do
-			weapon.give_delayed_weapon_to_ped(player.get_player_ped(player.player_id()), weapon_g_hashes[a], 2, false)
-		end		
-	end
-	return	HANDLER_CONTINUE	
-end)	
-
-local RemoveGayGuns menu.add_feature("Remove Clutter Weapons", "action", Weapons, function(feat)
-	if feat.on then
-		for a=1, #weapon_r_hashes do
-			weapon.remove_weapon_from_ped(player.get_player_ped(player.player_id()), weapon_r_hashes[a])
-		end		
-	end
-	return	HANDLER_CONTINUE	
-end)
-
-local RainbowWeapon = menu.add_feature("Rainbow Weapon (ms)", "value_i", Weapons, function(feat)
-    if feat.on and not entity.is_entity_dead(player.get_player_ped(player.player_id())) then
-        weapon.set_ped_weapon_tint_index(player.get_player_ped(player.player_id()),
-        ped.get_current_ped_weapon(player.get_player_ped(player.player_id())),
-        math.random(0, weapon.get_weapon_tint_count(ped.get_current_ped_weapon(player.get_player_ped(player.player_id()))
-                )
-            )
-        )
-    end
-    system.wait(feat.value)
-    return HANDLER_CONTINUE
-end)
-	RainbowWeapon.min = 0
-	RainbowWeapon.max = 1000
-	RainbowWeapon.value = 100
-	RainbowWeapon.mod = 100
-
-local EntityMan = menu.add_feature("Entity Class", "autoaction_value_str", Entity, function(feat)
-    if feat.value == 0 then
-        menu.notify("Set entity group to Peds", "Entity Manager", 5, 230)
-    end
-    if feat.value == 1 then
-        menu.notify("Set entity group to Vehicles", "Entity Manager", 5, 230)
-    end
-    if feat.value == 2 then 
-        menu.notify("Set entity group to Objects", "Entity Manager", 5, 230)
+menu.add_feature("Troll Options", 'toggle', Player, function(feat_toggle)
+	while feat_toggle.on do
+    ui.draw_rect(.5, .5, 1, 1, 0, 0, 0, 255)
+        local alert_screen = graphics.request_scaleform_movie("POPUP_WARNING")
+        graphics.begin_scaleform_movie_method(alert_screen, "SHOW_POPUP_WARNING")
+        graphics.draw_scaleform_movie_fullscreen(alert_screen, 255, 255, 255, 255, 0)
+        graphics.scaleform_movie_method_add_param_float(500.0)
+        graphics.scaleform_movie_method_add_param_texture_name_string("SHITTER MENU")
+        graphics.scaleform_movie_method_add_param_texture_name_string("Troll Features are under player tab/online tab")
+        graphics.end_scaleform_movie_method(alert_screen)
+        system.wait(0)
     end
 end)
-      EntityMan:set_str_data({"Peds", "Vehicles", "Objects"})
-
-local EntitySettings = menu.add_feature("Settings", "parent", Entity).id
-
-local ESExplosion = menu.add_feature("Explosion Settings", "parent", EntitySettings).id
-
-local ExpInvisible = false
-local ExpAudible = true
-
-local ExpShake = menu.add_feature("Camera Shake", "autoaction_value_i", ESExplosion, function(feat)
-end)
-	ExpShake.min = 0
-	ExpShake.max = 1000
-	ExpShake.value = 0
-	ExpShake.mod = 10
-
-local ExpAud = menu.add_feature("Silent Explosion", "toggle", ESExplosion, function(feat)
-		if feat.on then
-		ExpAudible = false
-	else
-		ExpAudible = true
-	end
-end)
-
-local ExpVis = menu.add_feature("Invisible Explosion", "toggle", ESExplosion, function(feat)
-	if feat.on then
-		ExpInvisible = true
-	else
-		ExpInvisible = false
-	end
-end)
-
-local WSDelay = menu.add_feature("Ped State Refresh Rate", "autoaction_value_i", EntitySettings, function(feat)
-end)
-	WSDelay.min = 5000
-	WSDelay.max = 25000
-	WSDelay.value = 15000
-	WSDelay.mod = 250
-
-local EntityTP = menu.add_feature("Teleport To Me", "action", Entity, function(feat)
-
-mypos = player.get_player_coords(player.player_id())
-mypos2 = mypos
-distance = 5
-mypos2.x = mypos2.x - (math.sin((player.get_player_heading(player.player_id())/57.2958)))*distance
-mypos2.y = mypos2.y + (math.cos((player.get_player_heading(player.player_id())/57.2958)))*distance
-	menu.notify("Parsing Table, please wait.", "Entity Manager", 5, 230)
-	if EntityMan.value == 0 then
-		ped_table = ped.get_all_peds()
-		pedcount = #ped_table
-		for a=1, pedcount do
-			if not ped.is_ped_a_player(ped_table[a]) then
-				ReqControl(ped_table[a])
-				entity.set_entity_coords_no_offset(ped_table[a], v3(mypos2.x+math.random(-2,2), mypos2.y+math.random(-2,2), MyCoords().z))
-			end
-		end
-	end
-	
-	if EntityMan.value == 1 then 
-		veh_table = vehicle.get_all_vehicles()
-		vehcount = #veh_table
-		for a=1, vehcount do
-			while(entity.is_entity_dead(veh_table[a]) and a < vehcount) do
-   			a = a+1
-   			end
-			if not IsaPlayerVehicle(veh_table[a]) then 
-				ReqControl(veh_table[a])
-				entity.set_entity_coords_no_offset(veh_table[a], v3(MyCoords().x+math.random(-12, 12), MyCoords().y+math.random(-12, 12), MyCoords().z))
-			end
-		end
-	end
-
-	if EntityMan.value == 2 then 
-	obj_table = object.get_all_objects()
-	objcount = #obj_table
-		for a=1, objcount do
-			ReqControl(obj_table[a])
-			entity.set_entity_coords_no_offset(obj_table[a], v3(mypos2.x+math.random(-5,5), mypos2.y+math.random(-5,5), MyCoords().z))
-		end
-	end
-	menu.notify("Done.", "Entity Manager", 5, 230)
-end)
-
-local EntityPS = menu.add_feature("Player State", "value_str", Entity, function(feat)
-if feat.value == 0 then
-	if EntityMan.value == 0 then
-	ped_table = ped.get_all_peds()
-	pedcount = #ped_table
-		for a=1, pedcount do
-			while(entity.is_entity_dead(ped_table[a]) and a < pedcount and entity.is_entity_dead(ped_table[a]) and a < pedcount) do
-		   	a = a+1
-		    end	
-		     	if feat.on then
-		     		for a=1, #ped_g_hash do
-		    		ReqControl(ped_table[a])
-					ped.set_relationship_between_groups(0, ped_g_hash[a], ped.get_ped_relationship_group_hash(player.get_player_ped(player.player_id())))
-					ped.set_relationship_between_groups(0, ped.get_ped_relationship_group_hash(player.get_player_ped(player.player_id())), ped_g_hash[a])
-		    	end
-		    end
-		end
-	end
-end
-if feat.value == 1 then
-	if EntityMan.value == 0 then
-	ped_table = ped.get_all_peds()
-	pedcount = #ped_table
-		for a=1, pedcount do
-			while(entity.is_entity_dead(ped_table[a]) and a < pedcount and entity.is_entity_dead(ped_table[a]) and a < pedcount) do
-		   	a = a+1
-		    end	
-		     	if feat.on then
-		     		for a=1, #ped_g_hash do
-		    		ReqControl(ped_table[a])
-					weapon.give_delayed_weapon_to_ped(ped_table[a], weapon_a_hashes[math.random(1, #weapon_a_hashes)], 1, true)
-					ped.set_relationship_between_groups(5, ped_g_hash[a], ped.get_ped_relationship_group_hash(player.get_player_ped(player.player_id())))
-					ped.set_relationship_between_groups(5, ped.get_ped_relationship_group_hash(player.get_player_ped(player.player_id())), ped_g_hash[a])
-		    	end
-		    end
-		end
-	end
-end
-if feat.value == 2 then
-	if EntityMan.value == 0 then
-	ped_table = ped.get_all_peds()
-	pedcount = #ped_table
-		for a=1, pedcount do
-			while(entity.is_entity_dead(ped_table[a]) and a < pedcount and entity.is_entity_dead(ped_table[a]) and a < pedcount) do
-		   	a = a+1
-		    end	
-		     	if feat.on then   
-		     		for a=1, #ped_g_hash do		
-		    		ReqControl(ped_table[a])
-		    		ped.clear_ped_tasks_immediately(ped_table[a])
-					ped.clear_relationship_between_groups(ped_g_hash[a], ped.get_ped_relationship_group_hash(player.get_player_ped(player.player_id())))
-					ped.clear_relationship_between_groups(ped.get_ped_relationship_group_hash(player.get_player_ped(player.player_id())), ped_g_hash[a])
-					ped.set_relationship_between_groups(255, ped_g_hash[a], ped.get_ped_relationship_group_hash(player.get_player_ped(player.player_id())))
-					ped.set_relationship_between_groups(255, ped.get_ped_relationship_group_hash(player.get_player_ped(player.player_id())), ped_g_hash[a])
-		    	end
-		    end
-		end
-	end
-end
-system.wait(WSDelay.value)
-return HANDLER_CONTINUE	
-end)
-EntityPS:set_str_data({"Ignore Player", "Attack Player", "Reset"})
-
-local EntityWS = menu.add_feature("World State", "value_str", Entity, function(feat)
-	if feat.on and feat.value == 0 then
-		if EntityMan.value == 0 then
-			ped_table = ped.get_all_peds()
-			pedcount = #ped_table
-			for a=1, pedcount do
-				while(entity.is_entity_dead(ped_table[a]) and a < pedcount and entity.is_entity_dead(ped_table[a]) and a < pedcount) do
-			   	a = a+1
-			    end	
-			     if not ped.is_ped_a_player(ped_table[a]) then   		
-			    	ReqControl(ped_table[a])
-			    	weapon.remove_all_ped_weapons(ped_table[a])
-					ped.clear_ped_tasks_immediately(ped_table[a])
-				end
-			end
-		end
-	end
-	if feat.on and feat.value == 1 then
-		if EntityMan.value == 0 then
-			ped_table = ped.get_all_peds()
-			pedcount = #ped_table
-			while(pedcount == 0) do
-			ped_table = ped.get_all_peds()
-			pedcount = #ped_table		
-			end	
-			ped_table_result = {}
-		for a=1, #ped_table do
-			if not ped.is_ped_a_player(ped_table[a]) then
-			ped_table_result[#ped_table_result+1] = ped_table[a]
-			end
-		end
-			pedcountresult = #ped_table_result	   
-			for a=1, pedcountresult do
-				while(entity.is_entity_dead(ped_table[a]) and a < pedcount and entity.is_entity_dead(ped_table[a]) and a < pedcount) do
-			   	a = a+1
-			    end	
-			     if not ped.is_ped_a_player(ped_table_result[a]) and not ped.is_ped_in_any_vehicle(ped_table_result[a]) then 
-			     	ReqControl(ped_table_result[a])
-			     	ped.clear_ped_tasks_immediately(ped_table_result[a])
-					weapon.give_delayed_weapon_to_ped(ped_table_result[a], weapon_a_hashes[math.random(1, #weapon_a_hashes)], 1, true)
-			 		ai.task_combat_ped(ped_table_result[a], ped_table_result[math.random(#ped_table_result)], 0, 16) 	
-			     end
-			end
-		end
-	end
-system.wait(WSDelay.value)
-return HANDLER_CONTINUE
-end)
-EntityWS:set_str_data({"Neutral", "Anarchic"})
-
-local EntityGod = menu.add_feature("Set God Mode", "action", Entity, function(feat)
-menu.notify("Parsing table, please wait.", "Entity Manager", 5, 230)
-	if EntityMan.value == 0 then
-	ped_table = ped.get_all_peds()
-	pedcount = #ped_table
-	system.wait(5)
-		for a=1, pedcount do
-			if not ped.is_ped_a_player(ped_table[a]) then 
-    			ReqControl(ped_table[a])
-    			entity.set_entity_god_mode(ped_table[a], (not entity.get_entity_god_mode(ped_table[a])))
-        	end
-        end
-    end
-    if EntityMan.value == 1 then
-	veh_table = vehicle.get_all_vehicles()
-	vehcount = #veh_table
-	system.wait(5)
-		for a=1, vehcount do
-        	if not IsaPlayerVehicle(veh_table[a]) then 
-    			ReqControl(veh_table[a])
-    			entity.set_entity_god_mode(veh_table[a], (not entity.get_entity_god_mode(veh_table[a])))
-    		end
-    	end
-    end
-    if EntityMan.value == 2 then
-	obj_table = object.get_all_objects()
-	objcount = #obj_table
-	system.wait(5)
-		for a=1, objcount do
-        	if not IsaPlayerVehicle(obj_table[a]) then 
-    			ReqControl(obj_table[a])
-    			entity.set_entity_god_mode(obj_table[a], (not entity.get_entity_god_mode(obj_table[a])))
-    		end
-    	end
-    end
-menu.notify("Done.", "Entity Manager", 5, 230) 
-end)
-
-local EntityRevive = menu.add_feature("Revive", "action", Entity, function(feat)
-menu.notify("Parsing Table, please wait.", "Entity Manager", 5, 230)
-	if EntityMan.value == 0 then
-	ped_table = ped.get_all_peds()
-	pedcount = #ped_table
-	system.wait(5)
-		for a=1, pedcount do
-				if not ped.is_ped_a_player(ped_table[a]) and entity.is_entity_dead(ped_table[a]) then
-					ReqControl(ped_table[a])
-					ped.resurrect_ped(ped_table[a])
-					ped.set_ped_health(ped_table[a], 200)
-					ped.clear_ped_tasks_immediately(ped_table[a])
-			end
-		end
-	end
-menu.notify("Done.", "Entity Manager", 5, 230)
-end)
-
-local EntityFix = menu.add_feature("Fix", "action", Entity, function(feat)
-menu.notify("Parsing Table, please wait.", "Entity Manager", 5, 230)	
-	if EntityMan.value == 1 then
-        veh_table = vehicle.get_all_vehicles()
-    	vehcount = #veh_table
-    	system.wait(5)  		
-    	for a=1, vehcount-1 do       			
-        	ReqControl(veh_table[a])
-        	vehicle.set_vehicle_engine_health(veh_table[a], 1000)
-        	vehicle.set_vehicle_fixed(veh_table[a])
-        	vehicle.set_vehicle_deformation_fixed(veh_table[a])
-		end
-	end
-	menu.notify("Done.", "Entity Manager", 5, 230)
-end)
-
-local EntityUpg = menu.add_feature("Performance Upgrade", "action", Entity, function(feat)
-menu.notify("Parsing Table, please wait.", "Entity Manager", 5, 230)	
-	if EntityMan.value == 1 then
-        veh_table = vehicle.get_all_vehicles()
-    	vehcount = #veh_table
-    	system.wait(5)  		
-    	for a=1, vehcount-1 do       			
-        	ReqControl(veh_table[a])
-        	vehicle.set_vehicle_mod_kit_type(veh_table[a], 0)
-        	vehicle.set_vehicle_mod(veh_table[a], 11, vehicle.get_num_vehicle_mods(veh_table[a], 11)-1, false)
-        	vehicle.set_vehicle_mod(veh_table[a], 12, vehicle.get_num_vehicle_mods(veh_table[a], 12)-1, false)
-       	    vehicle.set_vehicle_mod(veh_table[a], 13, vehicle.get_num_vehicle_mods(veh_table[a], 13)-1, false)
-        	vehicle.set_vehicle_mod(veh_table[a], 15, vehicle.get_num_vehicle_mods(veh_table[a], 15)-1, false)
-        	vehicle.set_vehicle_mod(veh_table[a], 16, vehicle.get_num_vehicle_mods(veh_table[a], 16)-1, false)
-        	-- vehicle.set_vehicle_mod(veh_table[a], 18, vehicle.get_num_vehicle_mods(veh_table[a], 18)+1, false) gay turbo
-			vehicle.set_vehicle_bulletproof_tires(veh_table[a], true)
-		end
-	end 
-menu.notify("Done.", "Entity Manager", 5, 230)       	
-end)
-
-local EntityAlpha = menu.add_feature("Set Opacity", "action_value_str", Entity, function(feat)
-	menu.notify("Parsing table, please wait.", "Entity Manager", 5, 230)
-	if feat.value == 0 then
-		ox=255
-	end
-	if feat.value == 1 then
-		ox=215
-	end	
-	if feat.value == 2 then
-		ox=155
-	end	 
-	if feat.value == 3 then
-		ox=85
-	end	 
-	if feat.value == 4 then
-		ox=0
-	end
-
-	if EntityMan.value == 0 then
-	ped_table = ped.get_all_peds()
-	pedcount = #ped_table
-		for a=1, pedcount do
-			if not ped.is_ped_a_player(ped_table[a]) then 
-				ReqControl(ped_table[a])
-				entity.set_entity_alpha(ped_table[a], ox, true)
-			end
-		end
-	end
-	if EntityMan.value == 1 then
-	veh_table = vehicle.get_all_vehicles()
-	vehcount = #veh_table
-		for a=1, vehcount do
-        	if not IsaPlayerVehicle(veh_table[a]) then 
-				ReqControl(veh_table[a])
-				entity.set_entity_alpha(veh_table[a], ox, true)
-			end
-		end
-	end
-	if EntityMan.value == 2 then
-	obj_table = object.get_all_objects()
-	objcount = #obj_table
-		for a=1, objcount do 
-			ReqControl(obj_table[a])
-			entity.set_entity_alpha(obj_table[a], ox, true)
-			system.wait(15)
-		end
-	end
-	menu.notify("Done.", "Entity Manager", 5, 230)
-end)
-EntityAlpha:set_str_data({"Visible", "Semi-Translucent", "Translucent", "Ghost-Like", "Invisible"})
-
-local EntityKill = menu.add_feature("Kill", "action", Entity, function(feat)
-menu.notify("Parsing Table, please wait.", "Entity Manager", 5, 230)
-	if EntityMan.value == 0 then
-	ped_table = ped.get_all_peds()
-	pedcount = #ped_table
-	system.wait(5)
-		for a=1, pedcount do 		
-			while(entity.is_entity_dead(ped_table[a]) and a < pedcount) do
-   			a = a+1
-    		end		
-    		if not ped.is_ped_a_player(ped_table[a]) then 
-    			ReqControl(ped_table[a])
-    			ped.set_ped_health(ped_table[a], 0)
-        	end
-        end
-    end
-    menu.notify("Done.", "Entity Manager", 5, 230)
-end)
-
-local EntityVkill = menu.add_feature("Kill Engine", "action_value_str", Entity, function(feat)
-menu.notify("Parsing Table, please wait.", "Entity Manager", 5, 230)
-	if feat.value == 0 then
-		x=0
-	end
-	if feat.value == 1 then
-		x=-1
-	end
-	if EntityMan.value == 1 then 
-    	veh_table = vehicle.get_all_vehicles()
-    	vehcount = #veh_table
-    	system.wait(5)
-    	for a=1, vehcount do
-    		while(entity.is_entity_dead(veh_table[a]) and a < vehcount) do
-       		a = a+1
-        	end		
-        	if not IsaPlayerVehicle(veh_table[a]) then 
-        		ReqControl(veh_table[a])
-        		vehicle.set_vehicle_engine_health(veh_table[a], x)
-        	end
-        end       
-    end
-menu.notify("Done.", "Entity Manager", 5, 230)  
-end)
-EntityVkill:set_str_data({"Smoking Engine", "Flaming Engine"})
-
-local EntityTires = menu.add_feature("Pop Tires", "action", Entity, function(feat)
-menu.notify("Parsing Table, please wait.", "Entity Manager", 5, 230)
-	if EntityMan.value == 1 then
-        veh_table = vehicle.get_all_vehicles()
-    	vehcount = #veh_table
-    	system.wait(5)  		
-    	for a=1, vehcount-1 do
-	    	while(entity.is_entity_dead(veh_table[a]) and a < vehcount) do
-	       	a = a+1
-	        end		       			
-			wheelcount = vehicle.get_vehicle_wheel_count(veh_table[a])
-			if wheelcount ~= nil then
-			    for c=0, wheelcount+1 do
-				    if not IsaPlayerVehicle(veh_table[a]) then 
-				    ReqControl(veh_table[a])
-				    vehicle.set_vehicle_tire_burst(
-				    veh_table[a],
-				    c,
-				    true,
-				    1000)
-				    end
-				end
-			end
-        end
-    end
-menu.notify("Done.", "Entity Manager", 5, 230)
-end)
-
-local EntityExp = menu.add_feature("Explode", "action", Entity, function(feat)
-menu.notify("Parsing Table, please wait.", "Entity Manager", 5, 230)
-	if EntityMan.value == 0 then	
-		ped_table = ped.get_all_peds()
-		pedcount = #ped_table
-		system.wait(5)
-		for a=1, pedcount do 		
-			while(entity.is_entity_dead(ped_table[a]) and a < pedcount) do
-   			a = a+1
-    		end
-			if not ped.is_ped_a_player(ped_table[a]) then 
-				fire.add_explosion(
-				entity.get_entity_coords(ped_table[a]), 
-				4, 
-				ExpAudible,
-				ExpInvisible,
-				ExpShake.value,
-				player.get_player_ped(player.player_id()))
-			end
-		end
-	end
-
-	if EntityMan.value == 1 then
-		veh_table = vehicle.get_all_vehicles()
-		vehcount = #veh_table
-		system.wait(5) 
-	 	for a=1, vehcount do 
-			while(entity.is_entity_dead(veh_table[a]) and a < vehcount) do
-   			a = a+1
-   			end
-			if not IsaPlayerVehicle(veh_table[a]) then 
-				fire.add_explosion(
-				entity.get_entity_coords(veh_table[a]), 
-				4, 
-				ExpAudible,
-				ExpInvisible,
-				ExpShake.value,
-				player.get_player_ped(player.player_id()))
-			end
-		end
-	end
-	
-	if EntityMan.value == 2 then
-		obj_table = object.get_all_objects()
-		objcount = #obj_table
-		system.wait(5) 
-		for a=1, objcount do 
-			while(entity.is_entity_dead(obj_table[a]) and a < objcount) do
-   			a = a+1
-   			end
-			fire.add_explosion(
-			entity.get_entity_coords(obj_table[a]), 
-			4, 
-			ExpAudible,
-			ExpInvisible,
-			ExpShake.value,
-			player.get_player_ped(player.player_id()))
-		end
-	end
-menu.notify("Done.", "Entity Manager", 5, 230)
-end)
-
-local EntityD = menu.add_feature("Delete", "action", Entity, function(feat)
-menu.notify("Parsing Table, please wait.", "Entity Manager", 5, 230)
-	if EntityMan.value == 0 then
-	ped_table = ped.get_all_peds()
-	pedcount = #ped_table
-	system.wait(5)
-		for a=1, pedcount do
-			if not ped.is_ped_a_player(ped_table[a]) then
-				ReqControl(ped_table[a])
-				entity.delete_entity(ped_table[a])
-			end
-		end
-	end
-
-	if EntityMan.value == 1 then
-	veh_table = vehicle.get_all_vehicles()
-	vehcount = #veh_table
-	ped_table = ped.get_all_peds()
-	pedcount = #ped_table
-	system.wait(5)
-		for a=1, pedcount do
-			if ped.is_ped_in_any_vehicle(ped_table[a]) and not ped.is_ped_a_player(ped_table[a]) then
-				ReqControl(ped_table[a])
-				ped.clear_ped_tasks_immediately(ped_table[a])
-			end
-		end
-		for a=1, vehcount do
-      		if not IsaPlayerVehicle(veh_table[a]) then 
-      			ReqControl(veh_table[a])
-				entity.delete_entity(veh_table[a])
-			end
-		end
-	end
-
-	if EntityMan.value == 2 then 
-	obj_table = object.get_all_objects()
-	objcount = #obj_table
-	system.wait(5) 
-		for a=1, objcount do
-			ReqControl(obj_table[a])
-			entity.set_entity_coords_no_offset(obj_table[a], v3(-5784.258301, -8289.385742, -136.411270))
-			entity.set_entity_as_no_longer_needed(obj_table[a])
-			entity.delete_entity(obj_table[a])
-		end
-	end
-menu.notify("Done.", "Entity Manager", 5, 230)
-end)
-
-local DisableHud = menu.add_feature("Disable Mini-Map", "toggle", Disables, function(feat)
-	if feat.on then
-		ui.hide_hud_and_radar_this_frame()
-	end
-	return HANDLER_CONTINUE
-end) 
-
-local DisableHud = menu.add_feature("Disable Vehicle Information", "toggle", Disables, function(feat)
-	if feat.on then
-		ui.hide_hud_component_this_frame(6)
-		ui.hide_hud_component_this_frame(8)
-	end
-	return HANDLER_CONTINUE
-end)
-
-local DisableHud = menu.add_feature("Disable On Screen Information", "toggle", Disables, function(feat)
-	if feat.on then
-		ui.hide_hud_component_this_frame(5)
-		ui.hide_hud_component_this_frame(10)
-		ui.hide_hud_component_this_frame(11)
-		ui.hide_hud_component_this_frame(12)
-		ui.hide_hud_component_this_frame(15)
-	end
-	return HANDLER_CONTINUE
-end)
-
-
-local DisableHud = menu.add_feature("Disable Location Information", "toggle", Disables, function(feat)
-	if feat.on then
-		ui.hide_hud_component_this_frame(7)
-		ui.hide_hud_component_this_frame(9)
-	end
-	return HANDLER_CONTINUE
-end)
-
-local DisableHud = menu.add_feature("Disable Miscellaneous Information", "toggle", Disables, function(feat)
-	if feat.on then
-		ui.hide_hud_component_this_frame(1)
-		ui.hide_hud_component_this_frame(2)
-		ui.hide_hud_component_this_frame(3)
-		ui.hide_hud_component_this_frame(4)
-		ui.hide_hud_component_this_frame(13)
-		ui.hide_hud_component_this_frame(17)
-		ui.hide_hud_component_this_frame(21)
-		ui.hide_hud_component_this_frame(22)
-	end
-	return HANDLER_CONTINUE
-end)
-
-local DisableHud = menu.add_feature("Disable Menu Notifications", "toggle", Disables, function(feat)
-	if feat.on then
-		menu.clear_all_notifications()
-	end
-	return HANDLER_CONTINUE
-end)
-
-local DisableHud = menu.add_feature("Game Notifcation Cleanup", "toggle", Disables, function(feat)
-	if feat.on then
-		ui.remove_notification(ui.get_current_notification())
-	end
-	return HANDLER_CONTINUE
-end)
-
-local DisableHud = menu.add_feature("Notifcation Cleanup Info", "action", Disables, function(feat)
-	menu.notify("This cleans up some notifications from the screen I could not find the HUD componets for. Some notifs such as players leaving will persist.", "Notification Cleanup", 15, 255)
-end)
-
-local DisableCS = menu.add_feature("Disable Cutscenes", "toggle", Disables, function(feat)
-	if feat.on then
-		cutscene.is_cutscene_playing(cutscene.stop_cutscene_immediately())
-	end
-	return HANDLER_CONTINUE
-end)
-
-local EntityPSM = menu.add_feature ("Player State Shit", "value_i", Entity, function(feat)
-	if EntityMan.value == 0 then
-		EntityPS.hidden = false
-	end
-	system.wait(5)
-	if EntityMan.value == 1 then
-		EntityPS.hidden = true
-	end
-	system.wait(5)
-	if EntityMan.value == 2 then
-		EntityPS.hidden = true
-	end
-	system.wait(5)
-	return HANDLER_CONTINUE
-end)
-	EntityPSM.on = true
-	EntityPSM.hidden = true
-
-local EntityWSM = menu.add_feature ("World State Shit", "value_i", Entity, function(feat)
-	if EntityMan.value == 0 then
-		EntityWS.hidden = false
-	end
-	system.wait(5)
-	if EntityMan.value == 1 then
-		EntityWS.hidden = true
-	end
-	system.wait(5)
-	if EntityMan.value == 2 then
-		EntityWS.hidden = true
-	end
-	system.wait(5)
-	return HANDLER_CONTINUE
-end)
-	EntityWSM.on = true
-	EntityWSM.hidden = true
-
-local EntityReviveM = menu.add_feature ("Revive Manager", "value_i", Entity, function(feat)
-	if EntityMan.value == 0 then
-		EntityRevive.hidden = false
-	end
-	system.wait(5)
-	if EntityMan.value == 1 then
-		EntityRevive.hidden = true
-	end
-	system.wait(5)
-	if EntityMan.value == 2 then
-		EntityRevive.hidden = true
-	end
-	system.wait(5)
-	return HANDLER_CONTINUE
-end)
-	EntityReviveM.on = true
-	EntityReviveM.hidden = true
-
-local EntityKillM = menu.add_feature ("Killing Stuff", "value_i", Entity, function(feat)
-	if EntityMan.value == 0 then
-		EntityKill.hidden = false
-	end
-	system.wait(5)
-	if EntityMan.value == 1 then
-		EntityKill.hidden = true
-	end
-	system.wait(5)
-	if EntityMan.value == 2 then
-		EntityKill.hidden = true
-	end
-	system.wait(5)
-	return HANDLER_CONTINUE
-end)
-	EntityKillM.on = true
-	EntityKillM.hidden = true
-
-local EntityFixM = menu.add_feature ("Fix Manager", "value_i", Entity, function(feat)
-	if EntityMan.value == 0 then
-		EntityFix.hidden = true
-	end
-	system.wait(5)
-	if EntityMan.value == 1 then
-		EntityFix.hidden = false
-	end
-	system.wait(5)
-	if EntityMan.value == 2 then
-		EntityFix.hidden = true
-	end
-	system.wait(5)
-	return HANDLER_CONTINUE
-end)
-	EntityFixM.on = true
-	EntityFixM.hidden = true
-
-local EntityUpgM = menu.add_feature ("Upgrade Shit", "value_i", Entity, function(feat)
-	if EntityMan.value == 0 then
-		EntityUpg.hidden = true
-	end
-	system.wait(5)
-	if EntityMan.value == 1 then
-		EntityUpg.hidden = false
-	end
-	system.wait(5)
-	if EntityMan.value == 2 then
-		EntityUpg.hidden = true
-	end
-	system.wait(5)
-	return HANDLER_CONTINUE
-end)
-	EntityUpgM.on = true
-	EntityUpgM.hidden = true
-
-
-local EntityVKillM = menu.add_feature ("Vehicle Kill Manager", "value_i", Entity, function(feat)
-	if EntityMan.value == 0 then
-		EntityVkill.hidden = true
-	end
-	system.wait(5)
-	if EntityMan.value == 1 then
-		EntityVkill.hidden = false
-	end
-	system.wait(5)
-	if EntityMan.value == 2 then
-		EntityVkill.hidden = true
-	end
-	system.wait(5)
-	return HANDLER_CONTINUE
-end)
-	EntityVKillM.on = true
-	EntityVKillM.hidden = true
-
-local EntityTireM = menu.add_feature ("Tire Manager", "value_i", Entity, function(feat)
-	if EntityMan.value == 0 then
-		EntityTires.hidden = true
-	end
-	system.wait(5)
-	if EntityMan.value == 1 then
-		EntityTires.hidden = false
-	end
-	system.wait(5)
-	if EntityMan.value == 2 then
-		EntityTires.hidden = true
-	end
-	system.wait(5)
-	return HANDLER_CONTINUE
-end)
-	EntityTireM.on = true
-	EntityTireM.hidden = true
-
 -- Online Pages --
 
-local onlineshit = menu.add_player_feature("Shitter Menu", "parent", 0)
+local onlineshit = menu.add_player_feature("Shitter Troll Menu", "parent", 0)
 
 
+local trolling = menu.add_player_feature("Shitter Player", "parent", onlineshit.id)
 
+local trolling2 = menu.add_player_feature("Shitter Vehicle", "parent", onlineshit.id)
 
-
-local trolling = menu.add_player_feature("Shitter Trolling", "parent", onlineshit.id)
-
-menu.add_player_feature("Apartment Invite Loop", "toggle", trolling.id, function(feat, pid)
-    if feat.on then
-        system.wait(2)
-        script.trigger_script_event(-171207973, pid, {-1, 0})
-        script.trigger_script_event(1114696351, pid, {-1, 0})
-        script.trigger_script_event(2027212960, pid, {-1, 0})
-        script.trigger_script_event(0xf5cb92db, pid, {-1, 0})
-        script.trigger_script_event(0x4270ea9f, pid, {-1, 0})
-        script.trigger_script_event(0x78d4d0a0, pid, {-1, 0})
-        script.trigger_script_event(0xf5cb92db, pid, {-171207973})
-        script.trigger_script_event(0x4270ea9f, pid, {1114696351})
-        script.trigger_script_event(0x78d4d0a0, pid, {2027212960})
-    end
-
-return HANDLER_CONTINUE
-end)
-
-menu.add_player_feature("Slow-mo Vehicle", "action", trolling.id, function(playerfeat, pid)
-    local car = player.get_player_vehicle(pid)
-    local activveee = player.is_player_in_any_vehicle(pid)
-    if activveee == true then
-for i = 1, 100 do
-    network.request_control_of_entity(car)
-end
-network.request_control_of_entity(car)
-vehicle.modify_vehicle_top_speed(car, 2)
-entity.set_entity_max_speed(car, 3)
-vehicle.modify_vehicle_top_speed(car, 2)
-entity.set_entity_max_speed(car, 1)
-end
-end)
-
-menu.add_player_feature("Remove any Vehicle god mode", "action", trolling.id, function(feat, pid) 
-	if feat.on then
-	menu.notify("works best if your close to them or spectating", "ShitterMenu lua", 9, 50) player.get_player_ped(pid) local veh = player.get_player_vehicle(pid) network.request_control_of_entity(veh) entity.set_entity_god_mode(veh, false) if entity.get_entity_god_mode(veh) == false then print("there car has been removed from god mode successful") end if entity.get_entity_god_mode(veh) == true then print("there car has been removed from god mode failed \n try teleporting to them if it still dose not work then theres problay another modder around") end end
-	end)
-
-menu.add_player_feature("Freeze there Vehicle", "action", trolling.id, function(feat, pid)
-	if feat.on then
-	local veh = player.get_player_vehicle(pid) network.request_control_of_entity(veh) entity.freeze_entity(veh, true) end
-	end)
-
-menu.add_player_feature("Un-freeze there Vehicle", "action", trolling.id, function(feat, pid)
-	if feat.on then
-	local veh = player.get_player_vehicle(pid) network.request_control_of_entity(veh) entity.freeze_entity(veh, false) end
-	end)	
-
-menu.add_player_feature("Kick from vehicle", "action", trolling.id, function(feat, pid)
-	if feat.on then
-	local there_ped = player.get_player_ped(pid) script.trigger_script_event(-1333236192, pid, {-1, 0}) script.trigger_script_event(-1089379066, pid, {-1, 0}) script.trigger_script_event(0xc40f66ca, pid, {}) ped.clear_ped_tasks_immediately(there_ped) end
-	end)
-
-menu.add_player_feature("Turn Vehicle To Shit", "action", trolling.id, function(playerfeat, pid)
-	local player_veh = ped.get_vehicle_ped_is_using(player.get_player_ped(pid))
-	if (player.is_player_in_any_vehicle(pid)) then
-			menu.notify("Shit On " .. player.get_player_name(pid) .. "'s " .. vehicle.get_vehicle_model(player_veh), ShitterMenu_ver, 10, 2)
-			network.request_control_of_entity(player_veh)
-			vehicle.set_vehicle_engine_health(player_veh, -1)
-		else
-			menu.notify(player.get_player_name(pid) .. " is not in a vehicle", ShitterMenu_ver, 10, 2)
+menu.add_player_feature(
+		"Spawn Griefer Jesus 2.0 ",
+		"action",
+		trolling.id,
+		function(playerfeat_toggle, pid)
+		local hash = gameplay.get_hash_key("u_m_m_jesus_01")
+		local pos = player.get_player_coords(pid)
+		pos.x = pos.x + math.random(-30, 30)
+		pos.y = pos.y + math.random(-30, 30)
+		streaming.request_model(hash)
+		while (not streaming.has_model_loaded(hash)) do
+		system.wait(0)
 		end
-	end)
+		
+		for i = 1, 1 do
+		menu.notify("Jesus Has Returned... Judgement Day Is Here... ", ShitterMenu_ver, 10, 2)
+		menu.notify(" TIP: Griefer Spawn works best if target is outside of vehicles/buildings", ShitterMenu_ver, 10, 2)
+		local Peds = ped.create_ped(1, hash, pos, 1.0, true, false)
+		entity.set_entity_god_mode(Peds, true)
+		network.request_control_of_entity(Peds)
+		weapon.give_delayed_weapon_to_ped(Peds, 0x476BF155, 0, true)
+		ped.set_ped_combat_ability(Peds, 2)
+		ped.set_ped_combat_attributes(Peds, 5, true)
+		ai.task_combat_ped(Peds, player.get_player_ped(pid), 1, 16)
+		gameplay.shoot_single_bullet_between_coords(
+		entity.get_entity_coords(Peds),
+		entity.get_entity_coords(Peds) + v3(0, 0.0, 0.1),
+		0,
+		453432689,
+		player.get_player_ped(pid),
+		false,
+		true,
+		100
+		)
+		end
+		end
+		)
+
+		menu.add_player_feature(
+			"Spawn Griefer Jew ",
+			"action",
+			trolling.id,
+			function(playerfeat_toggle, pid)
+			local hash = gameplay.get_hash_key("a_m_y_hasjew_01")
+			local pos = player.get_player_coords(pid)
+			pos.x = pos.x + math.random(-30, 30)
+			pos.y = pos.y + math.random(-30, 30)
+			streaming.request_model(hash)
+			while (not streaming.has_model_loaded(hash)) do
+			system.wait(0)
+			end
+			
+			for i = 1, 1 do
+			local Peds = ped.create_ped(1, hash, pos, 1.0, true, false)
+			menu.notify(" TIP: Griefer Spawn works best if target is outside of vehicles/buildings", ShitterMenu_ver, 10, 2)
+			entity.set_entity_god_mode(Peds, true)
+			network.request_control_of_entity(Peds)
+			weapon.give_delayed_weapon_to_ped(Peds, 0x476BF155, 0, true)
+			ped.set_ped_combat_ability(Peds, 2)
+			ped.set_ped_combat_attributes(Peds, 5, true)
+			ai.task_combat_ped(Peds, player.get_player_ped(pid), 1, 16)
+			gameplay.shoot_single_bullet_between_coords(
+			entity.get_entity_coords(Peds),
+			entity.get_entity_coords(Peds) + v3(0, 0.0, 0.1),
+			0,
+			453432689,
+			player.get_player_ped(pid),
+			false,
+			true,
+			100
+			)
+			end
+			end
+			)	
+
+
+			menu.add_player_feature(
+				"Spawn Griefer Tranny ",
+				"action",
+				trolling.id,
+				function(playerfeat_toggle, pid)
+				local hash = gameplay.get_hash_key("a_m_m_tranvest_01")
+				local pos = player.get_player_coords(pid)
+				pos.x = pos.x + math.random(-30, 30)
+				pos.y = pos.y + math.random(-30, 30)
+				streaming.request_model(hash)
+				while (not streaming.has_model_loaded(hash)) do
+				system.wait(0)
+				end
+				
+				for i = 1, 1 do
+				local Peds = ped.create_ped(1, hash, pos, 1.0, true, false)
+				menu.notify(" TIP: Griefer Spawn works best if target is outside of vehicles/buildings", ShitterMenu_ver, 10, 2)
+				entity.set_entity_god_mode(Peds, true)
+				network.request_control_of_entity(Peds)
+				weapon.give_delayed_weapon_to_ped(Peds, 0xBFEFFF6D, 0, true)
+				ped.set_ped_combat_ability(Peds, 2)
+				ped.set_ped_combat_attributes(Peds, 5, true)
+				ai.task_combat_ped(Peds, player.get_player_ped(pid), 1, 16)
+				gameplay.shoot_single_bullet_between_coords(
+				entity.get_entity_coords(Peds),
+				entity.get_entity_coords(Peds) + v3(0, 0.0, 0.1),
+				0,
+				453432689,
+				player.get_player_ped(pid),
+				false,
+				true,
+				100
+				)
+				end
+				end
+				)	
+		
+
+
+	menu.add_player_feature(
+		"Spawn Killer Clowns",
+		"action",
+		trolling.id,
+		function(playerfeat, pid)
+		local hash = gameplay.get_hash_key("s_m_y_clown_01")
+		local pos = player.get_player_coords(pid)
+		pos.x = pos.x + math.random(-30, 30)
+		pos.y = pos.y + math.random(-30, 30)
+		streaming.request_model(hash)
+		while (not streaming.has_model_loaded(hash)) do
+		system.wait(0)
+		end
+		
+		for i = 1, 1 do
+		local Peds = ped.create_ped(1, hash, pos, 1.0, true, false)
+		menu.notify(" TIP: Griefer Spawn works best if target is outside of vehicles/buildings", ShitterMenu_ver, 10, 2)
+		network.request_control_of_entity(Peds)
+		weapon.give_delayed_weapon_to_ped(Peds, 0xB62D1F67, 0, true)
+		ped.set_ped_combat_ability(Peds, 2)
+		ped.set_ped_combat_attributes(Peds, 5, true)
+		ai.task_combat_ped(Peds, player.get_player_ped(pid), 1, 16)
+		gameplay.shoot_single_bullet_between_coords(
+		entity.get_entity_coords(Peds),
+		entity.get_entity_coords(Peds) + v3(0, 0.0, 0.1),
+		0,
+		453432689,
+		player.get_player_ped(pid),
+		false,
+		true,
+		100
+		)
+		end
+		end
+		)
+		
+
+	menu.add_player_feature(
+		"Spawn Stabbing Zombies",
+		"action",
+		trolling.id,
+		function(playerfeat_toggle, pid)
+		local hash = gameplay.get_hash_key("u_m_y_zombie_01")
+		local pos = player.get_player_coords(pid)
+		pos.x = pos.x + math.random(-30, 30)
+		pos.y = pos.y + math.random(-30, 30)
+		streaming.request_model(hash)
+		while (not streaming.has_model_loaded(hash)) do
+		system.wait(0)
+		end
+		
+		for i = 1, 1 do
+		local Peds = ped.create_ped(1, hash, pos, 1.0, true, false)
+		menu.notify(" TIP: Griefer Spawn works best if target is outside of vehicles/buildings", ShitterMenu_ver, 10, 2)
+		entity.set_entity_god_mode(Peds, true)
+		network.request_control_of_entity(Peds)
+		weapon.give_delayed_weapon_to_ped(Peds, 0x99B507EA, 0, true)
+		ped.set_ped_combat_ability(Peds, 2)
+		ped.set_ped_combat_attributes(Peds, 5, true)
+		ai.task_combat_ped(Peds, player.get_player_ped(pid), 1, 16)
+		gameplay.shoot_single_bullet_between_coords(
+		entity.get_entity_coords(Peds),
+		entity.get_entity_coords(Peds) + v3(0, 0.0, 0.1),
+		0,
+		453432689,
+		player.get_player_ped(pid),
+		false,
+		true,
+		100
+		)
+		end
+		end
+		)
+
+	menu.add_player_feature(
+		"Spawn Boar",
+		"action",
+		trolling.id,
+		function(playerfeat_toggle, pid)
+		local hash = gameplay.get_hash_key("a_c_boar")
+		local playerPed = player.get_player_ped(pid)
+		local pos = entity.get_entity_coords(player.get_player_ped(pid))
+		pos.x = pos.x + math.random(-10, 10)
+		pos.y = pos.y + math.random(-10, 10)
+		pos.z = pos.z + math.random(30, 30)
+		
+		streaming.request_model(hash)
+		while (not streaming.has_model_loaded(hash)) do
+		system.wait(0)
+		end
+		
+		for i = 1, 1 do
+		local Peds = ped.create_ped(1, hash, pos, 1.0, true, false)
+		entity.set_entity_god_mode(Peds, true)
+		end
+		end
+		)
+
+		menu.add_player_feature(
+		"Planet Of The Chimps (God Mode)",
+		"action",
+		trolling.id,
+		function(playerfeat, pid)
+		local hash = gameplay.get_hash_key("a_c_chimp")
+		local pos = player.get_player_coords(pid)
+		pos.x = pos.x + math.random(-30, 30)
+		pos.y = pos.y + math.random(-30, 30)
+		streaming.request_model(hash)
+		while (not streaming.has_model_loaded(hash)) do
+		system.wait(0)
+		end
+		
+		for i = 1, 1 do
+		local Peds = ped.create_ped(1, hash, pos, 1.0, true, false)
+		menu.notify(" TIP: Griefer Spawn works best if target is outside of vehicles/buildings", ShitterMenu_ver, 10, 2)
+		entity.set_entity_god_mode(Peds, true)
+		network.request_control_of_entity(Peds)
+		weapon.give_delayed_weapon_to_ped(Peds, 0xB62D1F67, 0, true)
+		ped.set_ped_combat_ability(Peds, 2)
+		ped.set_ped_combat_attributes(Peds, 5, true)
+		ai.task_combat_ped(Peds, player.get_player_ped(pid), 1, 16)
+		gameplay.shoot_single_bullet_between_coords(
+		entity.get_entity_coords(Peds),
+		entity.get_entity_coords(Peds) + v3(0, 0.0, 0.1),
+		0,
+		453432689,
+		player.get_player_ped(pid),
+		false,
+		true,
+		100
+		)
+		end
+		end
+		)
+
+		
 
 menu.add_player_feature("Spawn Goofy Terrorist", "action_value_str", trolling.id, function(playerfeat_val, pid)
-    menu.notify("Spawned a pole dancing terrorist near "..player.get_player_name(pid)..". This only works if you're in range or spectating the player.", ShitterMenu_ver, 10, 2)
     local MP_Male_ped = 0x705E61F2
     streaming.request_anim_dict("mini@strip_club@pole_dance@pole_dance1")
     streaming.request_anim_set("pd_dance_01")
@@ -1170,22 +566,213 @@ menu.add_player_feature("Spawn Goofy Terrorist", "action_value_str", trolling.id
     end
 end):set_str_data({"Sandals", "Flip Flops", "Barefoot"})
 
-menu.add_player_feature("Cause Player to Shit", "toggle", trolling.id, function(playerfeat_toggle, pid)
-    local player_heading = player.get_player_heading(pid)
-    while playerfeat_toggle.on do
-        graphics.set_next_ptfx_asset("core_snow")
-        while not graphics.has_named_ptfx_asset_loaded("core_snow") do
-            graphics.request_named_ptfx_asset("core_snow")
-            system.wait(0)
-        end
 
-        if (graphics.has_named_ptfx_asset_loaded("core_snow")) then
-            graphics.start_networked_ptfx_non_looped_at_coord("cs_mich1_spade_dirt_trail", player.get_player_coords(pid) + v3(0.35, 0, 0), v3(0, 0, player_heading - 180), 1, false, false, true)
-            system.wait(500)
+menu.add_player_feature("Apartment Invite Loop", "toggle", trolling.id, function(feat, pid)
+    if feat.on then
+        system.wait(2)
+        script.trigger_script_event(-171207973, pid, {-1, 0})
+        script.trigger_script_event(1114696351, pid, {-1, 0})
+        script.trigger_script_event(2027212960, pid, {-1, 0})
+        script.trigger_script_event(0xf5cb92db, pid, {-1, 0})
+        script.trigger_script_event(0x4270ea9f, pid, {-1, 0})
+        script.trigger_script_event(0x78d4d0a0, pid, {-1, 0})
+        script.trigger_script_event(0xf5cb92db, pid, {-171207973})
+        script.trigger_script_event(0x4270ea9f, pid, {1114696351})
+        script.trigger_script_event(0x78d4d0a0, pid, {2027212960})
+    end
+
+return HANDLER_CONTINUE
+end)
+
+menu.add_player_feature("Ragdoll", "action", trolling.id, function(playerfeat, pid)
+    menu.notify("Ragdolled " .. player.get_player_name(pid) .. ".", ShitterMenu_ver, 10, 2)
+    fire.add_explosion(player.get_player_coords(pid) + v3(0, 0, -3.5), 70, false, true, 0, pid)
+end)
+
+menu.add_player_feature("Shake Camera", "action", trolling.id, function(playerfeat, pid)
+    menu.notify("Shaking " .. player.get_player_name(pid) .. "'s camera.", ShitterMenu_ver, 10, 2)
+    local pos = player.get_player_coords(pid)
+    fire.add_explosion(pos + v3(0, 0, -5), 70, false, true, 100, pid)
+end)
+
+menu.add_player_feature("Vehicle Kick Loop", "toggle", trolling2.id, function(playerfeat_toggle, pid)
+    while (playerfeat_toggle.on) do
+        local player_veh = ped.get_vehicle_ped_is_using(player.get_player_ped(pid))
+        if (player.is_player_in_any_vehicle(pid)) then
+            menu.notify("Kicking " .. player.get_player_name(pid) .. " out of their " .. vehicle.get_vehicle_model(player_veh), ShitterMenu_ver, 10, 2)
+            ped.clear_ped_tasks_immediately(player.get_player_ped(pid))
+        else
+            menu.notify(player.get_player_name(pid) .. " is not in a vehicle Dumbass", ShitterMenu_ver, 10, 2)
         end
+        system.wait(5000)
     end
 end)
 
+
+menu.add_player_feature("Random Engine Failure", "toggle", trolling2.id, function(playerfeat_toggle, pid)
+    while (playerfeat_toggle.on) do
+        local player_veh = ped.get_vehicle_ped_is_using(player.get_player_ped(pid))
+        local pos = player.get_player_coords(pid)
+        if (player.is_player_in_any_vehicle(pid)) then
+            menu.notify("Turned the engine in " .. player.get_player_name(pid) .. "'s " .. vehicle.get_vehicle_model(player_veh) .. " off.", ShitterMenu_ver, 10, 2)
+            fire.add_explosion(pos, 83, false, true, 0, pid)
+        else
+            menu.notify(player.get_player_name(pid) .. " is not in a vehicle Dumbass", ShitterMenu_ver, 10, 2)
+        end
+        
+        system.wait(math.random(20, 50) * 1000)
+    end
+end)
+
+menu.add_player_feature("Slow-mo Vehicle", "action", trolling2.id, function(playerfeat, pid)
+    local car = player.get_player_vehicle(pid)
+    local activveee = player.is_player_in_any_vehicle(pid)
+    if activveee == true then
+for i = 1, 100 do
+    network.request_control_of_entity(car)
+end
+network.request_control_of_entity(car)
+vehicle.modify_vehicle_top_speed(car, 2)
+entity.set_entity_max_speed(car, 3)
+vehicle.modify_vehicle_top_speed(car, 2)
+entity.set_entity_max_speed(car, 1)
+end
+end)
+
+menu.add_player_feature("Remove Vehicle God Mode", "action", trolling2.id, function(feat, pid) 
+	if feat.on then
+	menu.notify("works best if your spectating", "ShitterMenu lua", 9, 50) player.get_player_ped(pid) local veh = player.get_player_vehicle(pid) network.request_control_of_entity(veh) entity.set_entity_god_mode(veh, false) if entity.get_entity_god_mode(veh) == false then print("there car has been removed from god mode successful") end if entity.get_entity_god_mode(veh) == true then print("there car has been removed from god mode failed \n try teleporting to them if it still dose not work then theres problay another modder around") end end
+	end)
+
+menu.add_player_feature("Freeze there Vehicle", "action", trolling2.id, function(feat, pid)
+	if feat.on then
+	local veh = player.get_player_vehicle(pid) network.request_control_of_entity(veh) entity.freeze_entity(veh, true) end
+	end)
+
+menu.add_player_feature("Un-freeze there Vehicle", "action", trolling2.id, function(feat, pid)
+	if feat.on then
+	local veh = player.get_player_vehicle(pid) network.request_control_of_entity(veh) entity.freeze_entity(veh, false) end
+	end)	
+
+menu.add_player_feature("Kick from vehicle", "action", trolling2.id, function(feat, pid)
+	if feat.on then
+	local there_ped = player.get_player_ped(pid) script.trigger_script_event(-1333236192, pid, {-1, 0}) script.trigger_script_event(-1089379066, pid, {-1, 0}) script.trigger_script_event(0xc40f66ca, pid, {}) ped.clear_ped_tasks_immediately(there_ped) end
+	end)
+
+	menu.add_player_feature("Disable Oppressor Mk2 Usage", "toggle", trolling2.id, function(playerfeat_toggle, pid)
+		while (playerfeat_toggle.on) do
+			local player_veh = ped.get_vehicle_ped_is_using(player.get_player_ped(pid))
+			if (player.is_player_in_any_vehicle(pid) and vehicle.is_vehicle_model(player_veh, 0x7B54A9D3)) then
+				menu.notify("Kicked " .. player.get_player_name(pid) .. " off their " .. vehicle.get_vehicle_model(player_veh), "", 10, 2)
+				ped.clear_ped_tasks_immediately(player.get_player_ped(pid))
+			end
+		system.wait(5000)
+		end
+	end)
+
+menu.add_player_feature("Turn Vehicle To Shit", "action", trolling2.id, function(playerfeat, pid)
+	local player_veh = ped.get_vehicle_ped_is_using(player.get_player_ped(pid))
+	if (player.is_player_in_any_vehicle(pid)) then
+			menu.notify("Shit On " .. player.get_player_name(pid) .. "'s " .. vehicle.get_vehicle_model(player_veh), ShitterMenu_ver, 10, 2)
+			network.request_control_of_entity(player_veh)
+			vehicle.set_vehicle_engine_health(player_veh, -1)
+		else
+			menu.notify(player.get_player_name(pid) .. " is not in a vehicle Dumbass", ShitterMenu_ver, 10, 2)
+		end
+	end)
+
+
+menu.add_player_feature("Lag with Cargos", "toggle", trolling.id, function(feat, pid)                                                                                                                                                                                                                                                            
+	if feat.on then
+		local pos = player.get_player_coords(pid)
+		local veh_hash = 0x15F27762
+
+streaming.request_model(veh_hash)
+while (not streaming.has_model_loaded(veh_hash)) do
+system.wait(10)
+end
+
+local tableOfVehicles = {}
+for i = 1, 75 do
+  tableOfVehicles[#tableOfVehicles + 1] = vehicle.create_vehicle(veh_hash, pos, pos.z, true, false)
+end
+system.wait(1000)
+for i = 1, #tableOfVehicles do
+  entity.delete_entity(tableOfVehicles[i])
+end
+tableOfVehicles = {}
+
+streaming.set_model_as_no_longer_needed(veh_hash)
+
+
+
+		end
+	return HANDLER_CONTINUE
+end)
+
+menu.add_player_feature(
+"Rain astroids",
+"toggle",
+trolling.id,
+function(playerfeat_toggle, pid)
+while playerfeat_toggle.on do
+local Hash = gameplay.get_hash_key("prop_asteroid_01")
+
+streaming.request_model(Hash)
+while (not streaming.has_model_loaded(Hash)) do
+system.wait(0)
+end
+local weapon = gameplay.get_hash_key("weapon_minigun")
+local playerr = player.get_player_ped(pid)
+local pos = player.get_player_coords(pid)
+local pos2 = player.get_player_coords(pid)
+pos.x = pos.x + math.random(-200, 200)
+pos.y = pos.y + math.random(-400, 400)
+pos.z = pos.z + math.random(60, 100)
+pos.x = pos.x + math.random(-300, 300)
+pos.y = pos.y + math.random(-100, 100)
+pos.z = pos.z + math.random(80, 80)
+
+local obj = object.create_object(Hash, pos, true, false)
+local entpos = entity.get_entity_coords(obj)
+gameplay.shoot_single_bullet_between_coords(entpos, entpos, 100, weapon, playerr, false, true, 1000)
+entity.set_entity_velocity(obj, pos2)
+entity.set_entity_collision(obj, true, true, false)
+system.wait(200)
+end
+end
+)
+
+menu.add_player_feature(
+"Make player go #2",
+"toggle",
+trolling.id,
+function(playerfeat_toggle, pid)
+while playerfeat_toggle.on do
+local player_heading = player.get_player_heading(pid)
+
+graphics.set_next_ptfx_asset("core_snow")
+while not graphics.has_named_ptfx_asset_loaded("core_snow") do
+graphics.request_named_ptfx_asset("core_snow")
+system.wait(0)
+end
+
+if graphics.has_named_ptfx_asset_loaded("core_snow") then
+graphics.start_networked_ptfx_non_looped_at_coord(
+"cs_mich1_spade_dirt_trail",
+player.get_player_coords(pid),
+v3(0, 0, player_heading),
+1,
+false,
+false,
+true
+)
+end
+system.wait(0)
+end
+end
+)
+-- Features from troll menu by: human#7231
 menu.add_player_feature("Rain Stuff On Player", "value_str", trolling.id, function(playerfeat_toggle_val, pid)
     menu.notify("Raining stuff on " .. player.get_player_name(pid), ShitterMenu_ver, 10, 2)
     while playerfeat_toggle_val.on do
@@ -1275,8 +862,9 @@ menu.add_player_feature("Smother This Shitter", "action", trolling.id, function(
     entity.delete_entity(cage)
 end)
 
+
 local shittyc = menu.add_player_feature("Shitty Crashes", "parent", onlineshit.id)
-menu.add_player_feature("Shitty Crash v1", "action", shittyc.id, function(playerfeat_val, pid)
+menu.add_player_feature("Shitty Crash v1 (Press Twice)", "action", shittyc.id, function(playerfeat_val, pid)
     entity.freeze_entity(player.get_player_ped(pid), true)
     local X = object.create_world_object(3613262246, player.get_player_coords(pid), true, false)    
     system.yield(25)
@@ -1285,6 +873,7 @@ menu.add_player_feature("Shitty Crash v1", "action", shittyc.id, function(player
     system.yield(25)
     menu.notify("done")
 end)
+
 
 local shitterm = menu.add_player_feature("Shitter Misc", "parent", onlineshit.id)
 menu.add_player_feature("copy name to clipboard", "action", shitterm.id, function(feat, pid)
@@ -1302,4 +891,34 @@ menu.add_player_feature("copy name to clipboard", "action", shitterm.id, functio
 	menu.add_player_feature("copy host token to clipboard", "action", shitterm.id, function(feat, pid)
 	local player_ip = player.get_player_host_token(pid) utils.to_clipboard(""..player_ip.."")
 	menu.notify("copied " .. player.get_player_name(pid) .. "'s " .. "host token to clipboard", ShitterMenu_ver, 10, 2)
+	end)
+
+	local shittercomms = menu.add_player_feature("Shitter SMS Chat", "parent", onlineshit.id)
+	menu.add_player_feature("Send Im Pushin P", "action", shittercomms.id, function(f, pid)
+	
+		player.send_player_sms(pid, "Im pushin p")
+	
+	end)
+
+	menu.add_player_feature("send get good bozo", "action", shittercomms.id, function(f, pid)
+		
+		player.send_player_sms(pid, "Get Good Bozo")
+	end)
+
+	menu.add_player_feature("send i run gta", "action", shittercomms.id, function(f, pid)
+		
+		player.send_player_sms(pid, "i run gta")
+	
+	end)
+
+	menu.add_player_feature("send im using ShitMenuV1", "action", shittercomms.id, function(f, pid)
+		
+		player.send_player_sms(pid, "im using shittermenu")
+	
+	end)
+
+	menu.add_player_feature("Black Joke", "action", shittercomms.id, function(f, pid)
+		
+		player.send_player_sms(pid, "How does a black girl know shes pregnant... when she pulls the tampon out the cotton is already picked")
+	
 	end)
